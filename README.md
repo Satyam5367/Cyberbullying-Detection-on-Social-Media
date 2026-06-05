@@ -1,49 +1,86 @@
+# 🛡️ SentinelAI — Intelligent Cyberbullying Detection & Content Moderation System
+
 <div align="center">
 
-# 🛡️ SentinelAI
+### Detecting Toxicity Before It Becomes Harm
 
-### Intelligent Cyberbullying Detection & Content Moderation System
+An end-to-end NLP and Machine Learning system designed to identify cyberbullying, hate speech, threats, insults, and toxic content across social media platforms.
 
-<img src="https://img.shields.io/badge/Python-3.11-blue?style=for-the-badge&logo=python">
-<img src="https://img.shields.io/badge/ML-NLP-orange?style=for-the-badge">
-<img src="https://img.shields.io/badge/Scikit--Learn-Enabled-red?style=for-the-badge">
-<img src="https://img.shields.io/badge/Status-Production%20Ready-success?style=for-the-badge">
+Built using Natural Language Processing, TF-IDF Vectorization, SMOTE Oversampling, Ensemble Machine Learning, and Real-Time Inference.
 
-### 🚀 Detect Toxicity • Prevent Harassment • Build Safer Communities
+![Python](https://img.shields.io/badge/Python-3.11-blue?style=for-the-badge\&logo=python)
+![NLP](https://img.shields.io/badge/NLP-TF--IDF-orange?style=for-the-badge)
+![ML](https://img.shields.io/badge/Machine%20Learning-Scikit--Learn-success?style=for-the-badge)
+![Flask](https://img.shields.io/badge/Flask-Web%20App-black?style=for-the-badge)
 
 </div>
 
 ---
 
-# 🎯 Why SentinelAI?
+# 🚀 Overview
 
-Every day millions of users face:
+Cyberbullying has become one of the most critical challenges in online communities.
 
-❌ Cyberbullying
+Manual moderation is expensive, slow, and difficult to scale.
 
-❌ Hate Speech
+SentinelAI leverages machine learning and NLP to automatically identify harmful content while maintaining high accuracy and interpretability.
 
-❌ Toxic Comments
+The system supports real-time detection of:
 
-❌ Threats & Harassment
-
-Traditional keyword filters fail.
-
-SentinelAI leverages **Natural Language Processing + Machine Learning + Ensemble Intelligence** to identify harmful content in real-time with high accuracy.
+* Toxic Language
+* Severe Toxicity
+* Obscene Content
+* Personal Insults
+* Identity Hate
+* Threatening Behaviour
 
 ---
 
-# 📊 Project Snapshot
+# 🎯 Key Features
 
-| Metric              | Value            |
-| ------------------- | ---------------- |
-| Dataset Size        | 180,000+ Samples |
-| Toxicity Categories | 6                |
-| Models Evaluated    | 4                |
-| Best Accuracy       | 93.8%            |
-| Best F1 Score       | 0.914            |
-| Cross Validation    | 5-Fold           |
-| Deployment          | Flask Web App    |
+✅ End-to-End NLP Pipeline
+
+✅ TF-IDF Feature Engineering
+
+✅ SMOTE-Based Class Balancing
+
+✅ Multi-Class Toxicity Detection
+
+✅ Logistic Regression
+
+✅ Linear SVM
+
+✅ Random Forest
+
+✅ Naive Bayes
+
+✅ Ensemble Voting Engine
+
+✅ Cross Validation
+
+✅ ROC Analysis
+
+✅ Flask-Based Web Interface
+
+✅ Real-Time Prediction
+
+---
+
+# 📊 Dataset
+
+The project is inspired by industry-standard datasets:
+
+### Kaggle Toxic Comment Classification
+
+* 159,571 comments
+* Multiple toxicity categories
+
+### Twitter Hate Speech Dataset
+
+* 24,802 labeled tweets
+* Hate Speech
+* Offensive Language
+* Neutral Content
 
 ---
 
@@ -53,106 +90,129 @@ SentinelAI leverages **Natural Language Processing + Machine Learning + Ensemble
 Social Media Text
         │
         ▼
- NLP Preprocessing
-(Cleaning + Tokenization +
- Stopword Removal +
- Lemmatization)
+NLP Preprocessing
         │
         ▼
- TF-IDF Vectorization
+TF-IDF Vectorization
         │
         ▼
- SMOTE Balancing
+SMOTE Balancing
         │
         ▼
- ML Models
- ├─ Logistic Regression
- ├─ Linear SVM
- ├─ Random Forest
- └─ Naive Bayes
+Machine Learning Models
+ ├── Logistic Regression
+ ├── Linear SVM
+ ├── Random Forest
+ └── Naive Bayes
         │
         ▼
- Ensemble Decision Engine
+Ensemble Voting Engine
         │
         ▼
- Toxicity Prediction
+Cyberbullying Classification
 ```
 
 ---
 
-# 🧠 AI Pipeline
+# 🔍 NLP Pipeline
 
-### Stage 1 — Data Processing
+### Data Cleaning
 
+* Lowercasing
 * URL Removal
-* HTML Cleaning
+* HTML Removal
+* Special Character Cleaning
+
+### Text Processing
+
 * Tokenization
+* Stopword Removal
 * Lemmatization
 * Slang Expansion
 
-### Stage 2 — Feature Engineering
+### Feature Engineering
 
 * TF-IDF
 * Unigrams
 * Bigrams
 
-### Stage 3 — Class Balancing
+### Imbalance Handling
 
 * SMOTE Oversampling
 
-### Stage 4 — Model Training
+---
 
-* Logistic Regression
-* Linear SVM
-* Random Forest
-* Naive Bayes
+# 🧠 Machine Learning Models
 
-### Stage 5 — Real-Time Moderation
+| Model               | Purpose                    |
+| ------------------- | -------------------------- |
+| Naive Bayes         | Fast baseline classifier   |
+| Logistic Regression | Strong linear classifier   |
+| Linear SVM          | Best performing model      |
+| Random Forest       | Ensemble learning approach |
 
-* Ensemble Voting
-* Confidence Scoring
-* Category Detection
+### Ensemble Strategy
+
+Majority Voting
+
+A comment is flagged as cyberbullying when two or more models classify it as harmful.
 
 ---
 
-# 📈 Performance Comparison
+# 📈 Performance
 
 | Model               | Accuracy | F1 Score |
 | ------------------- | -------- | -------- |
-| 🏆 Linear SVM       | 93.8%    | 0.914    |
+| Linear SVM          | 93.8%    | 0.914    |
 | Random Forest       | 93.8%    | 0.908    |
 | Logistic Regression | 93.7%    | 0.902    |
 | Naive Bayes         | 89.4%    | 0.824    |
 
----
-
-# 🎭 Detection Categories
-
-| Category      | Description               |
-| ------------- | ------------------------- |
-| Toxic         | General Toxic Language    |
-| Severe Toxic  | Highly Aggressive Content |
-| Obscene       | Vulgar Language           |
-| Insult        | Personal Attacks          |
-| Threat        | Threatening Behaviour     |
-| Identity Hate | Group-based Hate Speech   |
+🏆 Best Model: Linear SVM
 
 ---
 
-# ⚡ Example
+# 📷 Project Visualizations
+
+## Label Distribution
+
+![Label Distribution](01_label_distribution.png)
+
+## Model Comparison
+
+![Model Comparison](03_model_comparison.png)
+
+## Confusion Matrices
+
+![Confusion Matrices](04_confusion_matrices.png)
+
+## ROC Curves
+
+![ROC Curves](06_roc_curves.png)
+
+## Cross Validation
+
+![Cross Validation](08_cross_validation.png)
+
+---
+
+# ⚡ Example Prediction
 
 ### Input
 
 ```text
-You are a complete idiot and nobody likes you.
+You are such an idiot and nobody likes you.
 ```
 
 ### Output
 
 ```text
 Prediction : CYBERBULLYING DETECTED
+
 Category   : Insult
+
 Confidence : 94%
+
 Risk Level : High
 ```
 
@@ -160,35 +220,13 @@ Risk Level : High
 
 # 🌍 Real World Applications
 
-🛡️ Social Media Moderation
-
-🎮 Gaming Communities
-
-🏫 Educational Platforms
-
-💬 Discussion Forums
-
-🏢 Enterprise Communication Monitoring
-
-📱 Content Filtering Systems
-
----
-
-# 🔮 Future Enhancements
-
-✅ BERT
-
-✅ RoBERTa
-
-✅ DistilBERT
-
-✅ Multilingual Detection
-
-✅ Explainable AI Dashboard
-
-✅ LLM-Powered Context Analysis
-
-✅ Real-Time Streaming Moderation
+* Social Media Moderation
+* Online Communities
+* Educational Platforms
+* Gaming Platforms
+* Discussion Forums
+* Automated Content Filtering
+* AI Safety Systems
 
 ---
 
@@ -197,15 +235,68 @@ Risk Level : High
 ```text
 Python
 Scikit-Learn
-NLP
-TF-IDF
-SMOTE
 Flask
 Pandas
 NumPy
 Matplotlib
 Seaborn
+TF-IDF
+SMOTE
+Joblib
 ```
+
+---
+
+# 📂 Project Structure
+
+```bash
+SentinelAI/
+│
+├── app.py
+├── cb_main.py
+├── cb_eda.py
+├── cb_inference.py
+│
+├── templates/
+│   └── index.html
+│
+├── models/
+├── plots/
+├── requirements.txt
+└── README.md
+```
+
+---
+
+# ▶️ Installation
+
+```bash
+git clone https://github.com/your-username/SentinelAI.git
+
+cd SentinelAI
+
+pip install -r requirements.txt
+
+python app.py
+```
+
+Open:
+
+```text
+http://127.0.0.1:5000
+```
+
+---
+
+# 🔮 Future Improvements
+
+* BERT Integration
+* RoBERTa Fine-Tuning
+* Multilingual Toxicity Detection
+* Explainable AI Dashboard
+* LLM-Based Context Analysis
+* Real-Time Streaming Moderation
+* Social Media API Integration
 
 ---
 
@@ -219,12 +310,16 @@ Ayush Kumar
 
 Nikhil Kumar
 
+Department of Computer Science & Engineering
+
+ITER, Siksha 'O' Anusandhan University
+
 ---
 
 <div align="center">
 
-### ⭐ If you like this project, consider starring the repository.
+### ⭐ Star the repository if you found it useful.
 
-### "Making the Internet Safer with Artificial Intelligence."
+### "Building Safer Digital Communities Through Artificial Intelligence."
 
 </div>
