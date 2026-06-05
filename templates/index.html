@@ -1,0 +1,1369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CyberGuard AI v2.0 — Advanced Cyberbullying Detection</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+:root{
+  --bg:#04080f;--bg2:#080f1a;--bg3:#0d1622;--card:#0b1420;--card2:#101c2e;
+  --border:rgba(255,255,255,0.06);--border2:rgba(255,255,255,0.11);
+  --c:#00e5ff;--c2:#7c3aed;--safe:#00e676;--danger:#ff1744;--warn:#ff6d00;
+  --text:#ddeeff;--text2:#7a9bb5;--text3:#304455;
+  --fh:'Bebas Neue',sans-serif;--fb:'Outfit',sans-serif;--fm:'JetBrains Mono',monospace;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--fb);font-size:15px;line-height:1.6;min-height:100vh;overflow-x:hidden}
+body::after{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(0,229,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(0,229,255,.025) 1px,transparent 1px);background-size:50px 50px;pointer-events:none;z-index:0}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--bg3);border-radius:3px}
+#loadBar{position:fixed;top:0;left:0;height:2px;width:0;background:linear-gradient(90deg,var(--c2),var(--c));z-index:9999;transition:width .35s ease;box-shadow:0 0 12px var(--c)}
+nav{position:sticky;top:0;z-index:200;background:rgba(4,8,15,.9);backdrop-filter:blur(24px);border-bottom:1px solid var(--border2)}
+.nav-inner{max-width:1380px;margin:0 auto;padding:0 28px;display:flex;align-items:center;justify-content:space-between;height:64px}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+.logo-shield{width:36px;height:36px;background:linear-gradient(135deg,var(--c2),var(--c));border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;box-shadow:0 0 20px rgba(0,229,255,.2)}
+.logo-text{font-family:var(--fh);font-size:26px;letter-spacing:2px;color:var(--text)}
+.logo-text span{color:var(--c)}
+.logo-ver{font-family:var(--fm);font-size:10px;color:var(--c2);background:rgba(124,58,237,.15);border:1px solid rgba(124,58,237,.3);border-radius:4px;padding:2px 6px}
+.nav-tabs{display:flex;gap:2px}
+.tab-btn{padding:7px 16px;border:none;background:none;border-radius:8px;font-family:var(--fb);font-size:13px;font-weight:500;color:var(--text2);cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:5px}
+.tab-btn:hover{color:var(--text);background:rgba(255,255,255,.05)}
+.tab-btn.active{color:var(--c);background:rgba(0,229,255,.08);border:1px solid rgba(0,229,255,.18)}
+.live-badge{display:flex;align-items:center;gap:6px;padding:5px 12px;background:rgba(0,230,118,.08);border:1px solid rgba(0,230,118,.2);border-radius:20px;font-size:11px;font-weight:600;color:var(--safe);font-family:var(--fm)}
+.live-dot{width:7px;height:7px;background:var(--safe);border-radius:50%;animation:blink 1.8s infinite}
+@keyframes blink{0%,100%{opacity:1;box-shadow:0 0 6px var(--safe)}50%{opacity:.4;box-shadow:none}}
+.sess-ctr{font-family:var(--fm);font-size:11px;color:var(--text3);padding:5px 10px;background:var(--bg3);border-radius:6px}
+.page{position:relative;z-index:1;max-width:1380px;margin:0 auto;padding:0 28px}
+.section{display:none;padding:36px 0 80px;animation:fadeUp .4s ease}
+.section.active{display:block}
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+.sec-title{font-family:var(--fh);font-size:44px;letter-spacing:2px;line-height:1;margin-bottom:4px}
+.sec-sub{font-size:14px;color:var(--text2);margin-bottom:28px}
+.card{background:var(--card);border:1px solid var(--border2);border-radius:16px;overflow:hidden;margin-bottom:20px;position:relative;z-index:1}
+.card-head{padding:16px 22px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.card-title{font-family:var(--fh);font-size:18px;letter-spacing:1px;display:flex;align-items:center;gap:8px}
+.card-body{padding:20px 22px}
+.hero{padding:48px 0 36px;display:grid;grid-template-columns:1fr 200px;gap:40px;align-items:center}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:8px;padding:5px 14px;background:rgba(124,58,237,.1);border:1px solid rgba(124,58,237,.25);border-radius:20px;font-size:11px;color:#a78bfa;font-family:var(--fm);margin-bottom:16px}
+.hero h1{font-family:var(--fh);font-size:clamp(52px,6vw,80px);letter-spacing:3px;line-height:.95;margin-bottom:14px}
+.hero h1 .hl{background:linear-gradient(135deg,var(--c),var(--c2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-desc{font-size:15px;color:var(--text2);max-width:480px;line-height:1.8;margin-bottom:22px}
+.stat-strip{display:flex;gap:28px}
+.stat-item .num{font-family:var(--fh);font-size:36px;color:var(--c);line-height:1}
+.stat-item .lbl{font-size:10px;color:var(--text3);font-family:var(--fm)}
+.hero-circle{position:relative;width:200px;height:200px}
+.hero-circle svg{width:100%;height:100%}
+.hc-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.hc-pct{font-family:var(--fh);font-size:40px;color:var(--c)}
+.hc-lbl{font-size:9px;color:var(--text3);font-family:var(--fm);text-align:center}
+.input-wrap{position:relative}
+.input-glow{position:absolute;inset:-1px;border-radius:17px;background:linear-gradient(135deg,var(--c2),var(--c));opacity:0;transition:opacity .3s;z-index:0;pointer-events:none}
+.input-wrap:focus-within .input-glow{opacity:.35}
+#mainInput{position:relative;z-index:1;width:100%;min-height:150px;background:var(--bg2);border:1px solid var(--border2);border-radius:16px;color:var(--text);font-family:var(--fb);font-size:16px;line-height:1.75;padding:18px 20px 48px;resize:vertical;outline:none;transition:border-color .2s}
+#mainInput::placeholder{color:var(--text3)}
+#mainInput:focus{border-color:transparent}
+.input-footer{position:absolute;bottom:0;left:0;right:0;z-index:2;display:flex;align-items:center;justify-content:space-between;padding:10px 16px;pointer-events:none}
+.char-track{font-family:var(--fm);font-size:11px;color:var(--text3)}
+.live-pill{display:flex;align-items:center;gap:5px;padding:3px 10px;border-radius:12px;font-size:11px;font-weight:700;font-family:var(--fm);transition:all .3s}
+.live-pill.safe{background:rgba(0,230,118,.1);color:var(--safe);border:1px solid rgba(0,230,118,.2)}
+.live-pill.moderate{background:rgba(255,179,0,.1);color:#ffb300;border:1px solid rgba(255,179,0,.2)}
+.live-pill.high{background:rgba(255,109,0,.1);color:var(--warn);border:1px solid rgba(255,109,0,.2)}
+.live-pill.critical{background:rgba(255,23,68,.12);color:var(--danger);border:1px solid rgba(255,23,68,.3)}
+.action-row{display:flex;align-items:center;gap:10px;margin-top:14px;flex-wrap:wrap}
+.btn-primary{display:inline-flex;align-items:center;gap:8px;padding:12px 26px;background:linear-gradient(135deg,var(--c2),var(--c));border:none;border-radius:10px;color:#fff;font-family:var(--fh);font-size:18px;letter-spacing:1px;cursor:pointer;transition:transform .2s,box-shadow .2s}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(0,229,255,.3)}
+.btn-primary.busy{opacity:.6;pointer-events:none}
+.btn-sec{padding:11px 16px;background:var(--bg3);border:1px solid var(--border2);border-radius:10px;color:var(--text2);font-family:var(--fb);font-size:13px;cursor:pointer;transition:all .2s}
+.btn-sec:hover{background:var(--card2);color:var(--text)}
+.ex-row{display:flex;gap:7px;flex-wrap:wrap;margin-top:12px;align-items:center}
+.ex-chip{padding:5px 12px;border-radius:20px;border:1px solid var(--border2);background:transparent;color:var(--text2);font-size:12px;cursor:pointer;transition:all .2s;font-family:var(--fb)}
+.ex-chip:hover{background:var(--bg3);color:var(--text);border-color:var(--border2)}
+.ex-chip.tx:hover{border-color:var(--danger);color:var(--danger)}
+#resultPanel{display:none;animation:fadeUp .5s ease}
+.verdict-banner{padding:18px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.verdict-banner.safe-bg{background:linear-gradient(135deg,rgba(0,230,118,.07),transparent);border-bottom:1px solid rgba(0,230,118,.12)}
+.verdict-banner.bully-bg{background:linear-gradient(135deg,rgba(255,23,68,.09),transparent);border-bottom:1px solid rgba(255,23,68,.18)}
+.verdict-main{display:flex;align-items:center;gap:14px}
+.v-icon{font-size:34px}
+.v-label{font-family:var(--fh);font-size:26px;letter-spacing:1.5px}
+.v-label.safe{color:var(--safe)}.v-label.bully{color:var(--danger)}
+.v-meta{font-size:12px;color:var(--text2);margin-top:2px}
+.v-meta strong{color:var(--text)}
+.risk-meter-wrap{display:flex;align-items:center;gap:10px}
+.risk-lbl-txt{font-family:var(--fm);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;padding:3px 8px;border-radius:4px}
+.risk-lbl-txt.safe{color:var(--safe);background:rgba(0,230,118,.1)}
+.risk-lbl-txt.moderate{color:#ffb300;background:rgba(255,179,0,.1)}
+.risk-lbl-txt.high{color:var(--warn);background:rgba(255,109,0,.1)}
+.risk-lbl-txt.critical{color:var(--danger);background:rgba(255,23,68,.1);animation:pcrit .8s infinite alternate}
+@keyframes pcrit{from{box-shadow:0 0 4px rgba(255,23,68,.3)}to{box-shadow:0 0 12px rgba(255,23,68,.7)}}
+.risk-bar-track{width:140px;height:7px;background:var(--bg3);border-radius:4px;overflow:hidden}
+.risk-bar-fill{height:100%;border-radius:4px;transition:width 1s ease}
+.proc-badge{font-family:var(--fm);font-size:11px;color:var(--text3);background:var(--bg2);padding:5px 10px;border-radius:6px;border:1px solid var(--border)}
+.rg{display:grid;grid-template-columns:1fr 1fr;gap:14px;padding:18px 18px 4px}
+.rg-full{grid-column:1/-1}
+.sc{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:16px}
+.sc-lbl{font-family:var(--fm);font-size:9px;letter-spacing:2px;color:var(--text3);text-transform:uppercase;margin-bottom:12px}
+.hl-box{background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:14px;font-size:15px;line-height:2.1;word-break:break-word;max-height:170px;overflow-y:auto}
+.vote-row{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border)}
+.vote-row:last-child{border-bottom:none}
+.vote-mname{font-size:13px;color:var(--text2);display:flex;align-items:center;gap:7px}
+.m-acc{font-family:var(--fm);font-size:9px;color:var(--text3);background:var(--bg3);padding:2px 5px;border-radius:3px}
+.vote-chip{font-family:var(--fm);font-size:10px;font-weight:700;padding:3px 9px;border-radius:5px;text-transform:uppercase;letter-spacing:.5px}
+.vc-norm{background:rgba(0,230,118,.1);color:var(--safe)}
+.vc-bully{background:rgba(255,23,68,.1);color:var(--danger)}
+.donut-wrap{display:flex;align-items:center;gap:16px}
+.donut-rel{position:relative;flex-shrink:0}
+.d-track{fill:none;stroke:var(--bg3)}
+.d-fill{fill:none;stroke-linecap:round;transition:stroke-dashoffset 1.2s cubic-bezier(.4,0,.2,1)}
+.d-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.d-pct{font-family:var(--fh);font-size:24px;line-height:1}
+.d-lbl{font-family:var(--fm);font-size:9px;color:var(--text3)}
+.cd{flex:1}
+.cdr{margin-bottom:9px}
+.cdr-top{display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px}
+.cdr-top span:first-child{color:var(--text2)}
+.cdr-top span:last-child{font-family:var(--fm);color:var(--text)}
+.cdr-bar{height:4px;background:var(--bg3);border-radius:2px;overflow:hidden}
+.cdr-fill{height:100%;border-radius:2px;transition:width 1s ease}
+.feat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}
+.feat-chip{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:14px 10px;text-align:center;transition:border-color .3s}
+.feat-chip:hover{border-color:var(--c)}
+.feat-val{font-family:var(--fh);font-size:25px;color:var(--c)}
+.feat-nm{font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:1.1px;margin-top:3px;font-family:var(--fm)}
+.cat-bar-row{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.cbn{width:105px;font-size:11px;color:var(--text2);flex-shrink:0;font-family:var(--fm)}
+.cb-track{flex:1;height:7px;background:var(--bg3);border-radius:4px;overflow:hidden}
+.cb-fill{height:100%;border-radius:4px;transition:width 1.2s cubic-bezier(.4,0,.2,1)}
+.cbv{width:32px;font-family:var(--fm);font-size:10px;color:var(--text3);text-align:right;flex-shrink:0}
+.cat-active .cbn{color:var(--danger);font-weight:700}
+.cat-active .cbv{color:var(--danger)}
+.lime-wrap{display:flex;flex-wrap:wrap;gap:7px;margin-top:4px}
+.lime-w{padding:4px 11px;border-radius:20px;font-size:12px;font-weight:600;font-family:var(--fm);display:flex;align-items:center;gap:5px}
+.lw-toxic{background:rgba(255,23,68,.1);color:var(--danger);border:1px solid rgba(255,23,68,.2)}
+.lw-safe{background:rgba(0,230,118,.08);color:var(--safe);border:1px solid rgba(0,230,118,.15)}
+.lw-ctr{background:rgba(0,229,255,.05);color:var(--text3);border:1px solid var(--border)}
+.lw-contrib{font-size:9px;opacity:.65}
+.sugg-list{display:flex;flex-direction:column;gap:7px}
+.sugg-item{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:10px;border:1px solid var(--border);background:var(--bg3)}
+.sugg-icon{font-size:17px;flex-shrink:0}
+.sugg-txt{font-size:13px;color:var(--text2);flex:1}
+.sugg-pri{font-family:var(--fm);font-size:10px;padding:2px 7px;border-radius:4px;text-transform:uppercase;letter-spacing:.7px;flex-shrink:0}
+.sp-low{color:var(--safe);background:rgba(0,230,118,.08)}
+.sp-medium{color:#ffb300;background:rgba(255,179,0,.08)}
+.sp-high{color:var(--warn);background:rgba(255,109,0,.08)}
+.sp-critical{color:var(--danger);background:rgba(255,23,68,.1);animation:pcrit .8s infinite alternate}
+.tfidf-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.tfidf-box{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:12px}
+.tfidf-cat{font-size:9px;font-family:var(--fm);color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-bottom:7px}
+.tfidf-words{display:flex;flex-wrap:wrap;gap:4px}
+.tw{font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(0,229,255,.07);color:var(--c);border:1px solid rgba(0,229,255,.12);font-family:var(--fm)}
+.tw.hit{background:rgba(255,23,68,.1);color:var(--danger);border-color:rgba(255,23,68,.2)}
+.pat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.pat-item{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:12px;text-align:center}
+.pat-item.hit{border-color:rgba(255,109,0,.4);background:rgba(255,109,0,.05)}
+.pat-num{font-family:var(--fh);font-size:26px;color:var(--text3)}
+.pat-item.hit .pat-num{color:var(--warn)}
+.pat-nm{font-size:9px;color:var(--text3);margin-top:3px;font-family:var(--fm);letter-spacing:.4px}
+.agree-bar-wrap{height:5px;background:var(--bg3);border-radius:3px;overflow:hidden;margin-top:12px}
+.agree-bar-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--c2),var(--c));transition:width 1s ease}
+/* ── DASHBOARD ── */
+.met-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}
+.met-card{background:var(--card);border:1px solid var(--border2);border-radius:14px;padding:20px;position:relative;overflow:hidden}
+.met-card::after{content:'';position:absolute;top:-20px;right:-20px;width:80px;height:80px;border-radius:50%;background:var(--gc,transparent);filter:blur(25px);opacity:.5}
+.met-icon{font-size:26px;margin-bottom:10px}
+.met-num{font-family:var(--fh);font-size:34px;line-height:1;margin-bottom:4px}
+.met-lbl{font-size:13px;color:var(--text2)}
+.met-trend{font-size:11px;color:var(--safe);margin-top:6px;font-family:var(--fm)}
+.charts-grid{display:grid;grid-template-columns:2fr 1fr;gap:16px;margin-bottom:16px}
+.chart-card{background:var(--card);border:1px solid var(--border2);border-radius:14px;padding:20px}
+.chart-title{font-family:var(--fh);font-size:17px;letter-spacing:.5px;margin-bottom:16px;display:flex;align-items:center;gap:7px}
+/* ── BATCH ── */
+#batchInput{width:100%;min-height:190px;background:var(--bg2);border:1px solid var(--border2);border-radius:12px;color:var(--text);font-family:var(--fm);font-size:13px;line-height:1.7;padding:16px;resize:vertical;outline:none}
+#batchInput:focus{border-color:var(--c)}
+.batch-sum{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:16px 0}
+.bsum-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:14px;text-align:center}
+.bsum-num{font-family:var(--fh);font-size:30px;line-height:1}
+.bsum-lbl{font-size:11px;color:var(--text2);margin-top:3px;font-family:var(--fm)}
+.rtable{width:100%;border-collapse:collapse}
+.rtable th{text-align:left;padding:9px 12px;font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:1.2px;border-bottom:1px solid var(--border);font-family:var(--fm)}
+.rtable td{padding:10px 12px;font-size:13px;border-bottom:1px solid var(--border);color:var(--text2)}
+.rtable tr:last-child td{border-bottom:none}
+.rtable tr:hover td{background:rgba(255,255,255,.02)}
+.pill{display:inline-block;padding:3px 9px;border-radius:20px;font-size:10px;font-weight:700;font-family:var(--fm);text-transform:uppercase;letter-spacing:.5px}
+.pill-safe{background:rgba(0,230,118,.1);color:var(--safe)}
+.pill-danger{background:rgba(255,23,68,.1);color:var(--danger)}
+.pill-mod{background:rgba(255,179,0,.1);color:#ffb300}
+.pill-high{background:rgba(255,109,0,.1);color:var(--warn)}
+.pill-crit{background:rgba(255,23,68,.15);color:var(--danger);border:1px solid rgba(255,23,68,.25)}
+/* ── COMPARE ── */
+.cmp-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+.cmp-input{width:100%;min-height:120px;background:var(--bg2);border:1px solid var(--border2);border-radius:12px;color:var(--text);font-family:var(--fb);font-size:15px;line-height:1.7;padding:14px 16px;resize:vertical;outline:none}
+.cmp-input:focus{border-color:var(--c)}
+.cmp-result{background:var(--card);border:1px solid var(--border2);border-radius:14px;padding:18px}
+.cmp-verdict{font-family:var(--fh);font-size:20px;letter-spacing:1px;margin-bottom:10px}
+.cmp-feats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
+.cmp-feat{background:var(--bg2);border-radius:8px;padding:10px;text-align:center}
+.cmp-feat-val{font-family:var(--fh);font-size:20px;color:var(--c)}
+.cmp-feat-lbl{font-size:9px;color:var(--text3);font-family:var(--fm);margin-top:2px}
+/* ── HISTORY ── */
+.hist-item{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border)}
+.hist-item:last-child{border-bottom:none}
+.hist-id{font-family:var(--fm);font-size:10px;color:var(--text3);width:64px;flex-shrink:0}
+.hist-text{flex:1;font-size:13px;color:var(--text2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.hist-time{font-family:var(--fm);font-size:10px;color:var(--text3);flex-shrink:0}
+.hist-risk{width:60px;text-align:center;flex-shrink:0}
+/* ── ABOUT ── */
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.about-card{background:var(--card);border:1px solid var(--border2);border-radius:14px;padding:22px}
+.about-card h3{font-family:var(--fh);font-size:20px;color:var(--c);margin-bottom:12px;letter-spacing:.5px}
+.about-card p{font-size:14px;color:var(--text2);line-height:1.8;margin-bottom:10px}
+.step-list{list-style:none}
+.step-item{display:flex;gap:14px;margin-bottom:16px;align-items:flex-start}
+.step-num{width:30px;height:30px;background:linear-gradient(135deg,var(--c2),var(--c));border-radius:7px;display:flex;align-items:center;justify-content:center;font-family:var(--fh);font-size:14px;flex-shrink:0}
+.step-content h4{font-size:14px;font-weight:600;margin-bottom:2px}
+.step-content p{font-size:13px;color:var(--text2);margin:0}
+.mtable{width:100%;border-collapse:collapse}
+.mtable th{text-align:left;padding:8px 10px;font-size:10px;color:var(--text3);border-bottom:1px solid var(--border);font-family:var(--fm)}
+.mtable td{padding:9px 10px;font-size:13px;border-bottom:1px solid var(--border)}
+.mtable tr:last-child td{border-bottom:none}
+.acc-bar-wrap{display:flex;align-items:center;gap:7px}
+.acc-track{flex:1;height:5px;background:var(--bg3);border-radius:3px;overflow:hidden}
+.acc-fill{height:100%;background:linear-gradient(90deg,var(--c2),var(--c));border-radius:3px}
+.spin{width:17px;height:17px;border:2.5px solid rgba(255,255,255,.2);border-top-color:#fff;border-radius:50%;animation:sp .7s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+#toast{position:fixed;bottom:26px;right:26px;z-index:9999;padding:11px 18px;background:var(--card2);border:1px solid var(--border2);border-radius:10px;font-size:13px;color:var(--text);transform:translateY(14px);opacity:0;transition:all .3s;pointer-events:none}
+#toast.show{transform:translateY(0);opacity:1}
+@media(max-width:900px){
+  .hero{grid-template-columns:1fr}.hero-circle{display:none}
+  .rg{grid-template-columns:1fr}.rg-full{grid-column:1}
+  .feat-grid{grid-template-columns:repeat(2,1fr)}
+  .tfidf-grid{grid-template-columns:repeat(2,1fr)}
+  .met-grid{grid-template-columns:repeat(2,1fr)}
+  .charts-grid{grid-template-columns:1fr}
+  .cmp-grid{grid-template-columns:1fr}
+  .about-grid{grid-template-columns:1fr}
+  .batch-sum{grid-template-columns:repeat(2,1fr)}
+}
+
+</style>
+</head>
+<body>
+<div id="loadBar"></div>
+<nav>
+  <div class="nav-inner">
+    <div class="logo">
+      <div class="logo-shield">🛡️</div>
+      <div class="logo-text">CYBER<span>GUARD</span></div>
+      <div class="logo-ver">v2.0</div>
+    </div>
+    <div class="nav-tabs">
+      <button class="tab-btn active" onclick="showTab('detect',this)">🔍 Detect</button>
+      <button class="tab-btn" onclick="showTab('dashboard',this)">📊 Dashboard</button>
+      <button class="tab-btn" onclick="showTab('batch',this)">📋 Batch</button>
+      <button class="tab-btn" onclick="showTab('compare',this)">⚖️ Compare</button>
+      <button class="tab-btn" onclick="showTab('history',this)">🕒 History</button>
+      <button class="tab-btn" onclick="showTab('about',this)">ℹ️ About</button>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px">
+      <div class="live-badge"><div class="live-dot"></div>4 MODELS LIVE</div>
+      <div class="sess-ctr" id="sessCtr">Session: 0</div>
+    </div>
+  </div>
+</nav>
+
+<!-- ═══════ DETECT ═══════ -->
+<div class="section active" id="sec-detect">
+<div class="page">
+  <div class="hero">
+    <div>
+      <div class="hero-eyebrow">🤖 NLP · TF-IDF · Ensemble Voting · Real-Time Analysis</div>
+      <h1>DETECT<br><span class="hl">CYBERBULLYING</span><br>WITH AI</h1>
+      <p class="hero-desc">Four ML models analyze text in milliseconds using TF-IDF features, aggression pattern matching, LIME explainability and ensemble majority voting.</p>
+      <div class="stat-strip">
+        <div class="stat-item"><div class="num" id="h-total">0</div><div class="lbl">SESSION ANALYZED</div></div>
+        <div class="stat-item"><div class="num">94.2%</div><div class="lbl">BEST ACCURACY</div></div>
+        <div class="stat-item"><div class="num">6,642</div><div class="lbl">VOCAB SIZE</div></div>
+        <div class="stat-item"><div class="num" id="h-ms">—</div><div class="lbl">AVG RESPONSE</div></div>
+      </div>
+    </div>
+    <div class="hero-circle">
+      <svg viewBox="0 0 200 200">
+        <circle cx="100" cy="100" r="80" fill="none" stroke="rgba(0,229,255,.07)" stroke-width="16"/>
+        <circle cx="100" cy="100" r="80" fill="none" stroke="url(#hcg)" stroke-width="16" stroke-linecap="round"
+          stroke-dasharray="502" stroke-dashoffset="126" transform="rotate(-90 100 100)"/>
+        <defs><linearGradient id="hcg" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stop-color="#7c3aed"/><stop offset="100%" stop-color="#00e5ff"/>
+        </linearGradient></defs>
+      </svg>
+      <div class="hc-center"><div class="hc-pct">75%</div><div class="hc-lbl">DATASET<br>BULLYING RATE</div></div>
+    </div>
+  </div>
+
+  <!-- Analyze Card -->
+  <div class="card">
+    <div class="card-head">
+      <div class="card-title">✍️ TEXT ANALYZER</div>
+      <div style="display:flex;gap:7px;flex-wrap:wrap">
+        <span style="font-family:var(--fm);font-size:10px;color:var(--c);background:rgba(0,229,255,.07);border:1px solid rgba(0,229,255,.15);padding:3px 8px;border-radius:4px">Naive Bayes 89.5%</span>
+        <span style="font-family:var(--fm);font-size:10px;color:var(--c);background:rgba(0,229,255,.07);border:1px solid rgba(0,229,255,.15);padding:3px 8px;border-radius:4px">Logistic Reg 93.8%</span>
+        <span style="font-family:var(--fm);font-size:10px;color:#00ff9d;background:rgba(0,255,157,.07);border:1px solid rgba(0,255,157,.2);padding:3px 8px;border-radius:4px">Linear SVM ⭐ 93.8%</span>
+        <span style="font-family:var(--fm);font-size:10px;color:var(--c);background:rgba(0,229,255,.07);border:1px solid rgba(0,229,255,.15);padding:3px 8px;border-radius:4px">Random Forest 93.9%</span>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="input-wrap">
+        <div class="input-glow"></div>
+        <textarea id="mainInput" placeholder="Type or paste a social media comment, tweet, or message here… The system analyzes aggression patterns in real-time as you type."
+          maxlength="2000" oninput="onType(this)"></textarea>
+        <div class="input-footer">
+          <span class="char-track"><span id="charCount">0</span>/2000</span>
+          <div class="live-pill safe" id="livePill">● SAFE</div>
+        </div>
+      </div>
+      <div class="action-row">
+        <button class="btn-primary" id="analyzeBtn" onclick="runAnalysis()">
+          <span id="btnSpinner" style="display:none"><div class="spin"></div></span>
+          <span id="btnLabel">🔍 ANALYZE</span>
+        </button>
+        <button class="btn-sec" onclick="clearDetect()">✕ Clear</button>
+        <button class="btn-sec" id="copyBtn" style="display:none" onclick="copyReport()">📋 Copy Report</button>
+      </div>
+      <div class="ex-row">
+        <span style="font-size:11px;color:var(--text3);font-family:var(--fm)">EXAMPLES:</span>
+        <button class="ex-chip" onclick="loadEx('safe1')">👍 Positive</button>
+        <button class="ex-chip" onclick="loadEx('safe2')">💬 Disagreement</button>
+        <button class="ex-chip tx" onclick="loadEx('tox1')">☣️ Toxic</button>
+        <button class="ex-chip tx" onclick="loadEx('thr1')">⚡ Threat</button>
+        <button class="ex-chip tx" onclick="loadEx('ins1')">💢 Insult</button>
+        <button class="ex-chip tx" onclick="loadEx('hate1')">🏳️ Hate Speech</button>
+        <button class="ex-chip tx" onclick="loadEx('sev1')">🔴 Severe Toxic</button>
+        <button class="ex-chip" onclick="loadEx('mix1')">🌀 Ambiguous</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- RESULT PANEL -->
+  <div id="resultPanel" class="card">
+    <div class="verdict-banner" id="verdictBanner">
+      <div class="verdict-main">
+        <div class="v-icon" id="vIcon">—</div>
+        <div>
+          <div class="v-label" id="vLabel">—</div>
+          <div class="v-meta" id="vMeta">—</div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+        <div>
+          <div style="font-size:9px;color:var(--text3);font-family:var(--fm);margin-bottom:3px">RISK SCORE</div>
+          <div class="risk-meter-wrap">
+            <div class="risk-bar-track"><div class="risk-bar-fill" id="riskBarFill"></div></div>
+            <div style="font-family:var(--fh);font-size:18px;color:var(--text)" id="riskNum">—</div>
+            <div class="risk-lbl-txt" id="riskLbl">—</div>
+          </div>
+        </div>
+        <div class="proc-badge" id="procBadge">—</div>
+      </div>
+    </div>
+
+    <div class="rg">
+      <!-- Highlighted Text -->
+      <div class="sc rg-full">
+        <div class="sc-lbl">🎨 HIGHLIGHTED ANALYSIS — SIGNAL WORDS DETECTED</div>
+        <div class="hl-box" id="hlBox">—</div>
+        <div style="margin-top:6px;font-size:10px;color:var(--text3);font-family:var(--fm)">Hover highlighted words to see category · Colors map to detection categories</div>
+      </div>
+
+      <!-- Confidence Donut -->
+      <div class="sc">
+        <div class="sc-lbl">🎯 CONFIDENCE & MODEL AGREEMENT</div>
+        <div class="donut-wrap">
+          <div class="donut-rel">
+            <svg width="108" height="108" viewBox="0 0 108 108">
+              <circle class="d-track" cx="54" cy="54" r="42" stroke-width="9"/>
+              <circle class="d-fill" id="donutFill" cx="54" cy="54" r="42" stroke-width="9"
+                stroke-dasharray="264" stroke-dashoffset="264" transform="rotate(-90 54 54)"/>
+            </svg>
+            <div class="d-center">
+              <div class="d-pct" id="donutPct">—</div>
+              <div class="d-lbl">CONF %</div>
+            </div>
+          </div>
+          <div class="cd">
+            <div class="cdr">
+              <div class="cdr-top"><span>Ensemble Vote</span><span id="cdEV">—</span></div>
+              <div class="cdr-bar"><div class="cdr-fill" id="fillEV" style="background:var(--c);width:0%"></div></div>
+            </div>
+            <div class="cdr">
+              <div class="cdr-top"><span>Category Signal</span><span id="cdCS">—</span></div>
+              <div class="cdr-bar"><div class="cdr-fill" id="fillCS" style="background:var(--danger);width:0%"></div></div>
+            </div>
+            <div class="cdr">
+              <div class="cdr-top"><span>Aggression Score</span><span id="cdAG">—</span></div>
+              <div class="cdr-bar"><div class="cdr-fill" id="fillAG" style="background:var(--warn);width:0%"></div></div>
+            </div>
+          </div>
+        </div>
+        <div style="font-size:9px;color:var(--text3);font-family:var(--fm);margin-top:12px;margin-bottom:4px">MODEL AGREEMENT (votes for bullying)</div>
+        <div class="agree-bar-wrap"><div class="agree-bar-fill" id="agreeBar" style="width:0%"></div></div>
+        <div style="display:flex;justify-content:space-between;font-family:var(--fm);font-size:9px;color:var(--text3);margin-top:3px">
+          <span>0/4</span><span id="agreeLabel">—</span><span>4/4</span>
+        </div>
+      </div>
+
+      <!-- Model Votes -->
+      <div class="sc">
+        <div class="sc-lbl">🤖 INDIVIDUAL MODEL PREDICTIONS</div>
+        <div id="votesContainer"></div>
+      </div>
+
+      <!-- Features -->
+      <div class="sc rg-full">
+        <div class="sc-lbl">📐 HANDCRAFTED TEXT FEATURES (from cb_main.py extract_text_features)</div>
+        <div class="feat-grid" id="featGrid"></div>
+      </div>
+
+      <!-- Category Bars -->
+      <div class="sc">
+        <div class="sc-lbl">📊 CATEGORY DETECTION SCORES</div>
+        <div id="catBars"></div>
+      </div>
+
+      <!-- Aggression Patterns -->
+      <div class="sc">
+        <div class="sc-lbl">⚡ REGEX AGGRESSION PATTERN HITS</div>
+        <div class="pat-grid" id="patGrid"></div>
+      </div>
+
+      <!-- LIME -->
+      <div class="sc rg-full">
+        <div class="sc-lbl">🔬 MODEL EXPLAINABILITY — WORD CONTRIBUTIONS (LIME-STYLE)</div>
+        <div class="lime-wrap" id="limeWrap"></div>
+        <div style="margin-top:8px;font-size:10px;color:var(--text3);font-family:var(--fm)">
+          🔴 Increases bullying prediction &nbsp;|&nbsp; 🟢 Supports safe classification &nbsp;|&nbsp; ⚫ Counter-evidence
+        </div>
+      </div>
+
+      <!-- TF-IDF Matches -->
+      <div class="sc rg-full">
+        <div class="sc-lbl">🔑 TF-IDF CATEGORY WORD MATCHES (from plot 05_top_tfidf_words.png)</div>
+        <div class="tfidf-grid" id="tfidfGrid"></div>
+      </div>
+
+      <!-- Moderation Suggestions -->
+      <div class="sc rg-full" style="margin-bottom:18px">
+        <div class="sc-lbl">🛡️ CONTENT MODERATION RECOMMENDATIONS</div>
+        <div class="sugg-list" id="suggList"></div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ═══════ DASHBOARD ═══════ -->
+<div class="section" id="sec-dashboard">
+<div class="page">
+  <div class="sec-title">DASHBOARD</div>
+  <div class="sec-sub">Real-time model performance metrics &amp; dataset analytics — Group 8 Project Results</div>
+
+  <div class="met-grid">
+    <div class="met-card" style="--gc:rgba(0,229,255,.3)">
+      <div class="met-icon">🔍</div>
+      <div class="met-num" style="color:var(--c)" id="d-total">0</div>
+      <div class="met-lbl">Session Analyzed</div>
+      <div class="met-trend" id="d-rate">—% bullying rate this session</div>
+    </div>
+    <div class="met-card" style="--gc:rgba(255,23,68,.3)">
+      <div class="met-icon">⚠️</div>
+      <div class="met-num" style="color:var(--danger)" id="d-bull">0</div>
+      <div class="met-lbl">Bullying Detected</div>
+      <div class="met-trend" style="color:var(--danger)">Dataset: 55% of 10,000 samples</div>
+    </div>
+    <div class="met-card" style="--gc:rgba(0,230,118,.3)">
+      <div class="met-icon">✅</div>
+      <div class="met-num" style="color:var(--safe)">94.2%</div>
+      <div class="met-lbl">Best Model Accuracy</div>
+      <div class="met-trend">Linear SVM F1-Macro: 0.9145</div>
+    </div>
+    <div class="met-card" style="--gc:rgba(124,58,237,.3)">
+      <div class="met-icon">⚡</div>
+      <div class="met-num" style="color:var(--c2)" id="d-ms">—ms</div>
+      <div class="met-lbl">Avg Response Time</div>
+      <div class="met-trend">4 models in parallel ensemble</div>
+    </div>
+  </div>
+
+  <div class="charts-grid">
+    <div class="chart-card">
+      <div class="chart-title">📊 Dataset Label Distribution (10,000 samples)</div>
+      <div style="position:relative;height:260px"><canvas id="distChart"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">🥧 Binary Split</div>
+      <div style="display:flex;gap:14px;font-size:12px;color:var(--text2);margin-bottom:10px">
+        <span style="display:flex;align-items:center;gap:5px"><span style="width:10px;height:10px;border-radius:2px;background:var(--danger);display:inline-block"></span>Cyberbullying 55%</span>
+        <span style="display:flex;align-items:center;gap:5px"><span style="width:10px;height:10px;border-radius:2px;background:var(--safe);display:inline-block"></span>Normal 45%</span>
+      </div>
+      <div style="position:relative;height:230px"><canvas id="splitChart"></canvas></div>
+    </div>
+  </div>
+
+  <div class="charts-grid">
+    <div class="chart-card">
+      <div class="chart-title">📈 5-Fold Cross-Validation F1 Macro Scores</div>
+      <div style="position:relative;height:240px"><canvas id="cvChart"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">🎯 Per-Class F1 — Linear SVM (Best Model)</div>
+      <div style="position:relative;height:240px"><canvas id="perClassChart"></canvas></div>
+    </div>
+  </div>
+
+  <div class="chart-card" style="margin-bottom:16px">
+    <div class="chart-title">📉 Session Risk Level Distribution</div>
+    <div style="position:relative;height:200px"><canvas id="riskChart"></canvas></div>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><div class="card-title">🏆 FULL MODEL COMPARISON TABLE</div></div>
+    <div class="card-body">
+      <table class="mtable">
+        <thead><tr>
+          <th>Model</th><th>Accuracy</th><th>F1-Macro</th><th>Precision</th><th>Recall</th><th>ROC-AUC</th><th>CV F1</th><th>CV Std</th>
+        </tr></thead>
+        <tbody>
+          <tr><td>Naive Bayes</td><td>89.5%</td><td>0.824</td><td>1.000</td><td>1.000</td><td>1.000</td><td>0.847</td><td>±0.011</td></tr>
+          <tr><td>Logistic Regression</td><td>93.8%</td><td>0.902</td><td>1.000</td><td>1.000</td><td>1.000</td><td>0.904</td><td>±0.028</td></tr>
+          <tr style="background:rgba(0,229,255,.03)">
+            <td style="color:var(--c)">⭐ Linear SVM</td>
+            <td><div class="acc-bar-wrap"><div class="acc-track"><div class="acc-fill" style="width:94%"></div></div><span style="font-size:11px;font-family:var(--fm)">93.8%</span></div></td>
+            <td style="color:var(--c);font-family:var(--fm)"><strong>0.915</strong></td>
+            <td>0.999</td><td>1.000</td><td>0.999</td>
+            <td style="color:var(--c);font-family:var(--fm)"><strong>0.919</strong></td><td style="color:var(--c)">±0.005</td>
+          </tr>
+          <tr><td>Random Forest</td><td>93.9%</td><td>0.908</td><td>1.000</td><td>1.000</td><td>1.000</td><td>0.911</td><td>±0.011</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ═══════ BATCH ═══════ -->
+<div class="section" id="sec-batch">
+<div class="page">
+  <div class="sec-title">BATCH ANALYZER</div>
+  <div class="sec-sub">Analyze up to 25 comments at once — one per line — with full summary statistics and risk breakdown</div>
+  <div class="card">
+    <div class="card-head"><div class="card-title">📋 MULTI-COMMENT INPUT</div></div>
+    <div class="card-body">
+      <textarea id="batchInput" placeholder="This is a great video!&#10;You are so stupid, nobody wants to hear your opinion.&#10;Thanks for sharing this helpful information.&#10;Watch your back, I will find you.&#10;Amazing content, keep it up!&#10;You are a complete loser and failure.&#10;I really enjoyed this tutorial, very clear.&#10;People like you should not be on the internet."></textarea>
+      <div style="font-size:11px;color:var(--text3);font-family:var(--fm);margin-top:8px;margin-bottom:14px">💡 One comment per line · Blank lines ignored · Max 25 comments · Ctrl+Enter to run</div>
+      <div style="display:flex;gap:10px">
+        <button class="btn-primary" onclick="runBatch()">🚀 RUN BATCH</button>
+        <button class="btn-sec" onclick="document.getElementById('batchInput').value='';document.getElementById('batchResultsWrap').style.display='none'">Clear</button>
+        <button class="btn-sec" onclick="loadBatchExamples()">📂 Load Examples</button>
+      </div>
+    </div>
+  </div>
+  <div id="batchResultsWrap" style="display:none">
+    <div class="batch-sum" id="batchSum"></div>
+    <div class="card">
+      <div class="card-head">
+        <div class="card-title">📊 RESULTS</div>
+        <div id="batchCatBreakdown" style="display:flex;gap:6px;flex-wrap:wrap"></div>
+      </div>
+      <div class="card-body" style="padding:0">
+        <table class="rtable">
+          <thead><tr>
+            <th>#</th><th>Text Preview</th><th>Verdict</th><th>Risk</th>
+            <th>Risk Score</th><th>Category</th><th>Votes</th><th>Top Signal</th>
+          </tr></thead>
+          <tbody id="batchTbody"></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="chart-card" style="margin-top:16px">
+      <div class="chart-title">📊 Batch Risk Score Distribution</div>
+      <div style="position:relative;height:200px"><canvas id="batchChart"></canvas></div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ═══════ COMPARE ═══════ -->
+<div class="section" id="sec-compare">
+<div class="page">
+  <div class="sec-title">SIDE-BY-SIDE COMPARE</div>
+  <div class="sec-sub">Analyze two texts simultaneously to compare their risk profiles, features, and model predictions</div>
+  <div class="cmp-grid">
+    <div>
+      <div style="font-family:var(--fm);font-size:11px;color:var(--text3);margin-bottom:7px;letter-spacing:1px">TEXT A</div>
+      <textarea class="cmp-input" id="cmpA" placeholder="Enter first text here…"></textarea>
+    </div>
+    <div>
+      <div style="font-family:var(--fm);font-size:11px;color:var(--text3);margin-bottom:7px;letter-spacing:1px">TEXT B</div>
+      <textarea class="cmp-input" id="cmpB" placeholder="Enter second text here…"></textarea>
+    </div>
+  </div>
+  <div style="display:flex;gap:10px;margin-bottom:20px">
+    <button class="btn-primary" onclick="runCompare()">⚖️ COMPARE</button>
+    <button class="btn-sec" onclick="loadCmpEx()">📂 Load Example</button>
+    <button class="btn-sec" onclick="document.getElementById('cmpA').value='';document.getElementById('cmpB').value='';document.getElementById('cmpResults').style.display='none'">Clear</button>
+  </div>
+  <div id="cmpResults" style="display:none">
+    <div class="cmp-grid" id="cmpCards"></div>
+    <div class="chart-card">
+      <div class="chart-title">📊 Feature Comparison — Text A vs Text B</div>
+      <div style="position:relative;height:280px"><canvas id="cmpChart"></canvas></div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ═══════ HISTORY ═══════ -->
+<div class="section" id="sec-history">
+<div class="page">
+  <div class="sec-title">ANALYSIS HISTORY</div>
+  <div class="sec-sub">Last 20 texts analyzed this session — automatically updated after each analysis</div>
+  <div style="display:flex;gap:10px;margin-bottom:16px">
+    <button class="btn-sec" onclick="loadHistory()">🔄 Refresh</button>
+    <button class="btn-sec" onclick="exportHistory()">⬇️ Export JSON</button>
+  </div>
+  <div class="card">
+    <div class="card-head">
+      <div class="card-title">🕒 RECENT ANALYSES</div>
+      <div id="histStats" style="font-family:var(--fm);font-size:11px;color:var(--text3)"></div>
+    </div>
+    <div class="card-body" id="histBody">
+      <div style="text-align:center;padding:40px;color:var(--text3);font-family:var(--fm)">No analyses yet — run some detections first</div>
+    </div>
+  </div>
+  <div class="chart-card" style="margin-top:4px">
+    <div class="chart-title">📈 Session Category Breakdown</div>
+    <div style="position:relative;height:220px"><canvas id="histChart"></canvas></div>
+  </div>
+</div>
+</div>
+
+<!-- ═══════ ABOUT ═══════ -->
+<div class="section" id="sec-about">
+<div class="page">
+  <div class="sec-title">ABOUT THIS PROJECT</div>
+  <div class="sec-sub">Group 8 — NLP Machine Learning Project · Cyberbullying Detection on Social Media</div>
+  <div class="about-grid" style="margin-bottom:16px">
+    <div class="about-card">
+      <h3>🎯 Project Overview</h3>
+      <p>CyberGuard AI is a machine learning system to detect and classify cyberbullying across social media platforms using an ensemble of 4 classical ML models.</p>
+      <p><strong style="color:var(--text)">Dataset:</strong> Synthetic data (10,000 samples) mimicking the Kaggle Toxic Comment Dataset and Twitter Hate Speech dataset. Distributed across 7 categories with realistic class imbalance.</p>
+      <p><strong style="color:var(--text)">Stack:</strong> Python · scikit-learn · TF-IDF · NumPy · Pandas · Matplotlib · Seaborn · Flask · Chart.js</p>
+    </div>
+    <div class="about-card">
+      <h3>⚙️ Full NLP Pipeline</h3>
+      <ul class="step-list">
+        <li class="step-item"><div class="step-num">1</div><div class="step-content"><h4>Text Preprocessing</h4><p>Lowercase, URL/mention removal, slang expansion (tbh→honestly), stopword filtering, punctuation stripping, elongation normalization</p></div></li>
+        <li class="step-item"><div class="step-num">2</div><div class="step-content"><h4>Feature Engineering</h4><p>Char count, word count, CAPS ratio, exclamation count, unique word ratio, avg word length, aggression pattern regex hits</p></div></li>
+        <li class="step-item"><div class="step-num">3</div><div class="step-content"><h4>TF-IDF Vectorization</h4><p>Unigrams + bigrams, 10K max features, sublinear TF scaling, min_df=2, max_df=0.9, unicode accent stripping</p></div></li>
+        <li class="step-item"><div class="step-num">4</div><div class="step-content"><h4>Ensemble Prediction</h4><p>Majority voting across 4 models — content flagged if ≥2 models vote bullying. Best model: Linear SVM (F1=0.9145)</p></div></li>
+      </ul>
+    </div>
+    <div class="about-card">
+      <h3>📊 Per-Class Performance (Linear SVM)</h3>
+      <table class="mtable">
+        <thead><tr><th>Category</th><th>Precision</th><th>Recall</th><th>F1</th><th>Support</th></tr></thead>
+        <tbody>
+          <tr><td style="color:var(--c)">identity_hate</td><td>1.00</td><td>1.00</td><td style="color:var(--safe)">1.00</td><td>126</td></tr>
+          <tr><td style="color:var(--c)">insult</td><td>0.99</td><td>1.00</td><td style="color:var(--safe)">0.99</td><td>188</td></tr>
+          <tr><td style="color:var(--c)">normal</td><td>1.00</td><td>1.00</td><td style="color:var(--safe)">1.00</td><td>900</td></tr>
+          <tr><td style="color:var(--warn)">obscene</td><td>0.82</td><td>0.77</td><td style="color:var(--warn)">0.79</td><td>254</td></tr>
+          <tr><td style="color:var(--warn)">severe_toxic</td><td>0.90</td><td>0.77</td><td style="color:var(--warn)">0.83</td><td>108</td></tr>
+          <tr><td style="color:var(--c)">threat</td><td>0.86</td><td>0.98</td><td style="color:var(--safe)">0.92</td><td>55</td></tr>
+          <tr><td style="color:var(--c)">toxic</td><td>0.85</td><td>0.90</td><td style="color:var(--c)">0.87</td><td>369</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="about-card">
+      <h3>🔌 API Endpoints</h3>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:10px;font-family:var(--fm);font-size:11px">
+          <span style="color:var(--safe)">POST</span> <span style="color:var(--c)">/api/analyze</span><br>
+          <span style="color:var(--text3)">→ Full single-text analysis with all features</span>
+        </div>
+        <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:10px;font-family:var(--fm);font-size:11px">
+          <span style="color:var(--safe)">POST</span> <span style="color:var(--c)">/api/batch</span><br>
+          <span style="color:var(--text3)">→ Batch analysis (max 25 texts) with summary stats</span>
+        </div>
+        <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:10px;font-family:var(--fm);font-size:11px">
+          <span style="color:var(--safe)">POST</span> <span style="color:var(--c)">/api/compare</span><br>
+          <span style="color:var(--text3)">→ Side-by-side comparison of two texts</span>
+        </div>
+        <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:10px;font-family:var(--fm);font-size:11px">
+          <span style="color:var(--safe)">POST</span> <span style="color:var(--c)">/api/live_stream</span><br>
+          <span style="color:var(--text3)">→ Lightweight real-time typing analysis</span>
+        </div>
+        <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:10px;font-family:var(--fm);font-size:11px">
+          <span style="color:var(--warn)">GET</span> <span style="color:var(--c)">/api/history</span> &nbsp;
+          <span style="color:var(--warn)">GET</span> <span style="color:var(--c)">/api/stats</span><br>
+          <span style="color:var(--text3)">→ Session history and aggregate statistics</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+// ══════════════════════════════════════════════════════
+// EXAMPLES
+// ══════════════════════════════════════════════════════
+const EX = {
+  safe1: "This is such a great video, I really enjoyed watching it! The explanations are so clear and helpful. Keep up the wonderful work!",
+  safe2: "I completely disagree with your point of view, but I respect your opinion and appreciate you taking the time to share it with us.",
+  tox1:  "You are the dumbest person I have ever encountered online. Your comment is completely worthless and nobody wants to hear you.",
+  thr1:  "Watch your back. I will find you and make you pay for posting this. Last warning — you will regret it.",
+  ins1:  "You are such a pathetic loser. A complete failure who is friendless, rejected and totally inferior to everyone around you.",
+  hate1: "Those people are always like this. They are ruining everything and should go back where they belong. No surprise coming from their kind.",
+  sev1:  "You are absolute garbage and a worthless piece of trash. You should go die. Complete scum of the earth.",
+  mix1:  "I think your opinion is interesting but honestly some of your points are really dumb and you should think more carefully.",
+};
+
+// ══════════════════════════════════════════════════════
+// GLOBALS
+// ══════════════════════════════════════════════════════
+let lastReport = null;
+let liveTimer = null;
+let chartsBuilt = false;
+let batchChartInst = null;
+let cmpChartInst = null;
+let histChartInst = null;
+let riskChartInst = null;
+
+// ══════════════════════════════════════════════════════
+// NAV
+// ══════════════════════════════════════════════════════
+function showTab(name, el) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('sec-' + name).classList.add('active');
+  el.classList.add('active');
+  if (name === 'dashboard') buildCharts();
+  if (name === 'history') loadHistory();
+}
+
+// ══════════════════════════════════════════════════════
+// LIVE TYPING
+// ══════════════════════════════════════════════════════
+function onType(el) {
+  document.getElementById('charCount').textContent = el.value.length;
+  clearTimeout(liveTimer);
+  if (el.value.trim().length < 4) {
+    setPill('safe', '● SAFE'); return;
+  }
+  liveTimer = setTimeout(async () => {
+    try {
+      const r = await fetch('/api/live_stream', {
+        method: 'POST', headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({text: el.value})
+      });
+      const d = await r.json();
+      const labels = {safe:'● SAFE', moderate:'◆ MODERATE', high:'▲ HIGH RISK', critical:'🚨 CRITICAL'};
+      setPill(d.risk, labels[d.risk] || '● SAFE');
+    } catch(e) {}
+  }, 350);
+}
+
+function setPill(risk, txt) {
+  const p = document.getElementById('livePill');
+  p.className = 'live-pill ' + risk;
+  p.textContent = txt;
+}
+
+function loadEx(k) {
+  document.getElementById('mainInput').value = EX[k] || '';
+  document.getElementById('charCount').textContent = (EX[k]||'').length;
+  showToast('Example loaded — click ANALYZE');
+  setPill('safe','● SAFE');
+}
+
+function clearDetect() {
+  document.getElementById('mainInput').value = '';
+  document.getElementById('charCount').textContent = '0';
+  document.getElementById('resultPanel').style.display = 'none';
+  document.getElementById('copyBtn').style.display = 'none';
+  setPill('safe','● SAFE');
+  lastReport = null;
+}
+
+// ══════════════════════════════════════════════════════
+// MAIN ANALYSIS
+// ══════════════════════════════════════════════════════
+async function runAnalysis() {
+  const text = document.getElementById('mainInput').value.trim();
+  if (!text) { showToast('Please enter some text first!'); return; }
+  setBusy(true);
+  try {
+    const res = await fetch('/api/analyze', {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({text})
+    });
+    const data = await res.json();
+    if (data.error) { showToast('Error: ' + data.error); return; }
+    lastReport = data;
+    renderResult(data);
+    updateSessionCounters(data);
+  } catch(e) { showToast('Connection error — is Flask running?'); }
+  finally { setBusy(false); }
+}
+
+function setBusy(on) {
+  const btn = document.getElementById('analyzeBtn');
+  const bar = document.getElementById('loadBar');
+  btn.classList.toggle('busy', on);
+  document.getElementById('btnSpinner').style.display = on ? 'inline-flex' : 'none';
+  document.getElementById('btnLabel').textContent = on ? 'Analyzing…' : '🔍 ANALYZE';
+  bar.style.width = on ? '70%' : '100%';
+  if (!on) setTimeout(() => { bar.style.transition='none'; bar.style.width='0%'; setTimeout(()=>bar.style.transition='width .35s ease',50); }, 400);
+}
+
+function renderResult(data) {
+  const p = data.prediction;
+  const f = data.features;
+  const panel = document.getElementById('resultPanel');
+  panel.style.display = 'block';
+  panel.scrollIntoView({behavior:'smooth', block:'nearest'});
+
+  // Verdict banner
+  const isBully = p.is_cyberbullying;
+  const risk = p.risk_level;
+  const banner = document.getElementById('verdictBanner');
+  banner.className = 'verdict-banner ' + (isBully ? 'bully-bg' : 'safe-bg');
+  document.getElementById('vIcon').textContent = isBully ? '🚨' : '✅';
+  document.getElementById('vLabel').className = 'v-label ' + (isBully ? 'bully' : 'safe');
+  document.getElementById('vLabel').textContent = isBully ? 'CYBERBULLYING DETECTED' : 'SAFE — NORMAL CONTENT';
+  document.getElementById('vMeta').innerHTML =
+    `Category: <strong>${p.label.replace('_',' ').toUpperCase()}</strong> &nbsp;|&nbsp; ` +
+    `Ensemble: <strong>${p.bully_vote_count}/4</strong> models flagged bullying`;
+
+  // Risk bar
+  const rColors = {safe:getComputedStyle(document.documentElement).getPropertyValue('--safe'),
+    moderate:'#ffb300', high:getComputedStyle(document.documentElement).getPropertyValue('--warn'),
+    critical:getComputedStyle(document.documentElement).getPropertyValue('--danger')};
+  const fill = document.getElementById('riskBarFill');
+  fill.style.width = p.risk_score + '%';
+  fill.style.background = rColors[risk] || '#fff';
+  document.getElementById('riskNum').textContent = p.risk_score;
+  const lbl = document.getElementById('riskLbl');
+  lbl.className = 'risk-lbl-txt ' + risk;
+  lbl.textContent = risk.toUpperCase();
+  document.getElementById('procBadge').textContent = '⚡ ' + data.processing_time_ms + 'ms';
+
+  // Highlighted text
+  document.getElementById('hlBox').innerHTML = data.highlighted || data.original;
+
+  // Donut confidence
+  const conf = p.risk_score;
+  const circ = 264;
+  const offset = circ - (conf / 100) * circ;
+  const df = document.getElementById('donutFill');
+  df.style.strokeDashoffset = offset;
+  df.style.stroke = isBully ? '#ff1744' : '#00e676';
+  document.getElementById('donutPct').textContent = Math.round(conf);
+
+  // Confidence bars
+  const ev = (p.bully_vote_count / 4) * 100;
+  const cs = Math.min((p.max_category_score / 8) * 100, 100);
+  const ag = Math.min(f.aggression_score * 20, 100);
+  document.getElementById('fillEV').style.width = ev + '%';
+  document.getElementById('fillCS').style.width = cs + '%';
+  document.getElementById('fillAG').style.width = ag + '%';
+  document.getElementById('cdEV').textContent = p.bully_vote_count + '/4';
+  document.getElementById('cdCS').textContent = p.max_category_score.toFixed(1);
+  document.getElementById('cdAG').textContent = f.aggression_score;
+
+  // Agreement bar
+  document.getElementById('agreeBar').style.width = ev + '%';
+  document.getElementById('agreeLabel').textContent = p.bully_vote_count + '/4 voted bullying';
+
+  // Model votes
+  const voteColors = {safe:'vc-norm', bully:'vc-bully'};
+  const accs = p.model_accuracies || {};
+  document.getElementById('votesContainer').innerHTML =
+    Object.entries(p.model_votes).map(([m, lbl]) => {
+      const isBullyVote = lbl !== 'normal';
+      return `<div class="vote-row">
+        <div class="vote-mname">${m} <span class="m-acc">${accs[m]||'?'}%</span></div>
+        <div class="vote-chip ${isBullyVote ? 'vc-bully':'vc-norm'}">${lbl.replace('_',' ')}</div>
+      </div>`;
+    }).join('');
+
+  // Features grid
+  const feats = [
+    {v: f.char_count,           n:'Characters'},
+    {v: f.word_count,           n:'Words'},
+    {v: f.unique_words,         n:'Unique Words'},
+    {v: (f.unique_ratio*100).toFixed(0)+'%', n:'Unique Ratio'},
+    {v: f.avg_word_len.toFixed(1), n:'Avg Word Len'},
+    {v: (f.caps_ratio*100).toFixed(0)+'%', n:'CAPS Ratio'},
+    {v: f.caps_word_count,      n:'CAPS Words'},
+    {v: f.exclamation_count,    n:'Exclamations'},
+    {v: f.question_count,       n:'Questions'},
+    {v: f.punct_count,          n:'Punctuation'},
+    {v: f.positive_word_count,  n:'Positive Words'},
+    {v: f.negative_word_count,  n:'Negative Words'},
+  ];
+  document.getElementById('featGrid').innerHTML = feats.map(ft =>
+    `<div class="feat-chip"><div class="feat-val">${ft.v}</div><div class="feat-nm">${ft.n}</div></div>`
+  ).join('');
+
+  // Category bars
+  const catColors = {threat:'#ff6b35', severe_toxic:'#ff1744', identity_hate:'#aa00ff',
+    insult:'#ff4081', toxic:'#ff6d00', obscene:'#6200ea'};
+  const cs2 = p.category_scores;
+  const maxS = Math.max(...Object.values(cs2), 0.01);
+  document.getElementById('catBars').innerHTML = Object.entries(cs2)
+    .sort((a,b)=>b[1]-a[1])
+    .map(([cat, score]) => {
+      const pct = (score / Math.max(maxS, 1)) * 100;
+      const isActive = cat === p.label && isBully;
+      const color = catColors[cat] || '#00e5ff';
+      return `<div class="cat-bar-row ${isActive ? 'cat-active':''}">
+        <div class="cbn">${cat.replace('_',' ')}</div>
+        <div class="cb-track"><div class="cb-fill" style="width:${pct}%;background:${color}"></div></div>
+        <div class="cbv">${score.toFixed(1)}</div>
+      </div>`;
+    }).join('');
+
+  // Aggression patterns
+  const patNames = {
+    caps_escalation:'CAPS 3+',
+    repeated_punct:'Repeat !!??',
+    personal_attack:'Personal Attack',
+    imperative_threat:'Imperative Threat',
+    second_person_insult:'2nd Person Insult',
+  };
+  const pats = f.aggression_patterns || {};
+  document.getElementById('patGrid').innerHTML = Object.entries(pats).map(([k, v]) =>
+    `<div class="pat-item ${v>0?'hit':''}">
+      <div class="pat-num">${v}</div>
+      <div class="pat-nm">${patNames[k]||k}</div>
+    </div>`
+  ).join('');
+
+  // LIME explainability
+  document.getElementById('limeWrap').innerHTML = (data.explainability || []).map(e => {
+    const cls = e.direction === 'toxic' ? 'lw-toxic' : (e.direction === 'safe' ? 'lw-safe' : 'lw-ctr');
+    const sign = e.contribution > 0 ? '+' : '';
+    return `<div class="lime-w ${cls}">${e.word} <span class="lw-contrib">${sign}${e.contribution.toFixed(2)}</span></div>`;
+  }).join('') || '<div style="color:var(--text3);font-size:13px;font-family:var(--fm)">No significant word contributions found</div>';
+
+  // TF-IDF matches
+  const tm = data.tfidf_matches || {};
+  const tfidfTopWords = {
+    identity_hate:['always','surprise','group','people','kind','causing','trusted'],
+    insult:['subhuman','failure','alone','friendless','inferior','ugly','rejected'],
+    normal:['agree','good','helpful','understand','nice','well','respect','awesome'],
+    obscene:['disgusting','fat','ugly','failure','loser','worthless','shame'],
+    severe_toxic:['pay','consequences','find','loser','warned','regret','trash'],
+    threat:['pay','consequences','careful','find','regret','warned','watch'],
+    toxic:['great','wonderful','enjoy','thanks','amazing','interesting','love'],
+  };
+  document.getElementById('tfidfGrid').innerHTML = Object.entries(tfidfTopWords).map(([cat, words]) => {
+    const foundSet = new Set((tm[cat]?.found || []));
+    return `<div class="tfidf-box">
+      <div class="tfidf-cat">${cat.replace('_',' ')}</div>
+      <div class="tfidf-words">
+        ${words.map(w => `<span class="tw ${foundSet.has(w)?'hit':''}">${w}</span>`).join('')}
+      </div>
+    </div>`;
+  }).join('');
+
+  // Suggestions
+  document.getElementById('suggList').innerHTML = (data.suggestions || []).map(s =>
+    `<div class="sugg-item">
+      <div class="sugg-icon">${s.icon}</div>
+      <div class="sugg-txt">${s.text}</div>
+      <div class="sugg-pri sp-${s.priority}">${s.priority}</div>
+    </div>`
+  ).join('');
+
+  document.getElementById('copyBtn').style.display = 'inline-flex';
+}
+
+// ══════════════════════════════════════════════════════
+// SESSION COUNTERS
+// ══════════════════════════════════════════════════════
+async function updateSessionCounters(data) {
+  try {
+    const r = await fetch('/api/stats');
+    const s = await r.json();
+    const tot = s.session_total;
+    document.getElementById('h-total').textContent = tot;
+    document.getElementById('sessCtr').textContent = 'Session: ' + tot;
+    const rt = s.avg_response_ms;
+    document.getElementById('h-ms').textContent = rt + 'ms';
+    // dashboard counters
+    const dt = document.getElementById('d-total');
+    if (dt) {
+      dt.textContent = tot;
+      document.getElementById('d-bull').textContent = s.session_bullying;
+      document.getElementById('d-ms').textContent = rt + 'ms';
+      document.getElementById('d-rate').textContent = s.bullying_rate + '% bullying rate this session';
+    }
+  } catch(e) {}
+}
+
+// ══════════════════════════════════════════════════════
+// COPY REPORT
+// ══════════════════════════════════════════════════════
+function copyReport() {
+  if (!lastReport) return;
+  const p = lastReport.prediction;
+  const f = lastReport.features;
+  const txt = [
+    '=== CyberGuard AI v2.0 — Analysis Report ===',
+    'Text: ' + lastReport.original,
+    'Verdict: ' + (p.is_cyberbullying ? 'CYBERBULLYING DETECTED' : 'SAFE'),
+    'Category: ' + p.label, 'Risk Level: ' + p.risk_level,
+    'Risk Score: ' + p.risk_score, 'Processing: ' + lastReport.processing_time_ms + 'ms',
+    '--- Model Votes ---',
+    ...Object.entries(p.model_votes).map(([m,v]) => m + ': ' + v),
+    '--- Features ---',
+    'Words: ' + f.word_count + '  Chars: ' + f.char_count,
+    'CAPS Ratio: ' + (f.caps_ratio*100).toFixed(1) + '%',
+    'Aggression Score: ' + f.aggression_score,
+    'Sentiment Polarity: ' + f.sentiment_polarity,
+  ].join('\n');
+  navigator.clipboard.writeText(txt).then(() => showToast('Report copied to clipboard!'));
+}
+
+// ══════════════════════════════════════════════════════
+// BATCH
+// ══════════════════════════════════════════════════════
+async function runBatch() {
+  const raw = document.getElementById('batchInput').value;
+  const texts = raw.split('\n').filter(t => t.trim());
+  if (!texts.length) { showToast('Enter some text first!'); return; }
+  try {
+    const res = await fetch('/api/batch', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({texts})
+    });
+    const data = await res.json();
+    renderBatch(data);
+  } catch(e) { showToast('Error — is Flask running?'); }
+}
+
+function renderBatch(data) {
+  const s = data.summary;
+  const rColors = {safe:'var(--safe)', moderate:'#ffb300', high:'var(--warn)', critical:'var(--danger)'};
+  document.getElementById('batchSum').innerHTML = [
+    {n:s.total, l:'Total', c:'var(--c)'},
+    {n:s.bullying, l:'Bullying', c:'var(--danger)'},
+    {n:s.normal, l:'Safe', c:'var(--safe)'},
+    {n:s.bullying_rate+'%', l:'Bullying Rate', c:'#ffb300'},
+  ].map(x => `<div class="bsum-card"><div class="bsum-num" style="color:${x.c}">${x.n}</div><div class="bsum-lbl">${x.l}</div></div>`).join('');
+
+  // Category breakdown pills
+  const catBreakdown = s.category_breakdown || {};
+  document.getElementById('batchCatBreakdown').innerHTML =
+    Object.entries(catBreakdown).map(([k,v]) =>
+      `<span class="pill pill-danger">${k.replace('_',' ')}: ${v}</span>`
+    ).join('');
+
+  document.getElementById('batchTbody').innerHTML = data.results.map((r, i) => {
+    const riskPill = {safe:'pill-safe', moderate:'pill-mod', high:'pill-high', critical:'pill-crit'}[r.risk] || 'pill-safe';
+    return `<tr>
+      <td style="color:var(--text3);font-family:var(--fm)">${i+1}</td>
+      <td style="color:var(--text);font-size:12px;max-width:300px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${r.text.substring(0,100)}${r.text.length>100?'…':''}</td>
+      <td><span class="pill ${r.is_cyberbullying?'pill-danger':'pill-safe'}">${r.is_cyberbullying?'🚨 Bullying':'✅ Safe'}</span></td>
+      <td><span class="pill ${riskPill}">${r.risk}</span></td>
+      <td style="font-family:var(--fm);font-size:12px">${r.risk_score}</td>
+      <td style="color:var(--text2);font-size:12px">${r.label.replace('_',' ')}</td>
+      <td style="font-family:var(--fm);font-size:12px">${r.votes}/4</td>
+      <td style="color:var(--text3);font-family:var(--fm);font-size:11px">${r.top_signal||'—'}</td>
+    </tr>`;
+  }).join('');
+
+  document.getElementById('batchResultsWrap').style.display = 'block';
+  document.getElementById('batchResultsWrap').scrollIntoView({behavior:'smooth'});
+
+  // Batch risk chart
+  const scores = data.results.map(r => r.risk_score);
+  const labels = data.results.map((_,i) => '#'+(i+1));
+  const bgColors = data.results.map(r =>
+    ({safe:'rgba(0,230,118,.7)', moderate:'rgba(255,179,0,.7)', high:'rgba(255,109,0,.7)', critical:'rgba(255,23,68,.7)'})[r.risk] || 'rgba(0,229,255,.7)');
+  if (batchChartInst) batchChartInst.destroy();
+  batchChartInst = new Chart(document.getElementById('batchChart'), {
+    type:'bar',
+    data:{labels, datasets:[{label:'Risk Score', data:scores, backgroundColor:bgColors, borderRadius:5, borderSkipped:false}]},
+    options:{responsive:true, maintainAspectRatio:false,
+      plugins:{legend:{display:false}},
+      scales:{
+        x:{ticks:{color:'#304455',font:{family:'JetBrains Mono',size:10}},grid:{color:'rgba(255,255,255,.03)'}},
+        y:{min:0,max:100,ticks:{color:'#304455'},grid:{color:'rgba(255,255,255,.03)'}}
+      }
+    }
+  });
+}
+
+function loadBatchExamples() {
+  document.getElementById('batchInput').value = Object.values(EX).join('\n');
+  showToast('8 example comments loaded');
+}
+
+// ══════════════════════════════════════════════════════
+// COMPARE
+// ══════════════════════════════════════════════════════
+async function runCompare() {
+  const t1 = document.getElementById('cmpA').value.trim();
+  const t2 = document.getElementById('cmpB').value.trim();
+  if (!t1 || !t2) { showToast('Enter text in both panels'); return; }
+  try {
+    const res = await fetch('/api/compare', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({text1:t1, text2:t2})
+    });
+    const data = await res.json();
+    renderCompare(data.results);
+  } catch(e) { showToast('Error — is Flask running?'); }
+}
+
+function renderCompare(results) {
+  const colors = ['var(--c)', 'var(--c2)'];
+  document.getElementById('cmpCards').innerHTML = results.map((r, i) => {
+    const p = r.prediction; const f = r.features;
+    const isBully = p.is_cyberbullying;
+    return `<div class="cmp-result">
+      <div class="cmp-verdict" style="color:${isBully?'var(--danger)':'var(--safe)'}">${isBully?'🚨 BULLYING':'✅ SAFE'} — ${p.label.replace('_',' ').toUpperCase()}</div>
+      <div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap">
+        <span class="pill ${isBully?'pill-danger':'pill-safe'}">Risk: ${p.risk_level}</span>
+        <span class="pill pill-mod">Score: ${p.risk_score}</span>
+        <span style="font-family:var(--fm);font-size:11px;color:var(--text3)">${p.bully_vote_count}/4 models flagged</span>
+      </div>
+      <div class="cmp-feats">
+        ${[
+          {v:f.word_count,n:'Words'},{v:(f.caps_ratio*100).toFixed(0)+'%',n:'CAPS'},
+          {v:f.exclamation_count,n:'Exclamations'},{v:f.aggression_score,n:'Aggression'},
+          {v:f.positive_word_count,n:'Positive Words'},{v:f.negative_word_count,n:'Negative Words'},
+        ].map(x=>`<div class="cmp-feat"><div class="cmp-feat-val" style="color:${colors[i]}">${x.v}</div><div class="cmp-feat-lbl">${x.n}</div></div>`).join('')}
+      </div>
+    </div>`;
+  }).join('');
+
+  if (results.length === 2) {
+    const f1 = results[0].features; const f2 = results[1].features;
+    const featLabels = ['Words','Chars','CAPS%','Exclamations','Aggression','Positive','Negative'];
+    const normalize = (v, max) => Math.min((v / Math.max(max,1)) * 100, 100);
+    const maxes = [30,300,1,5,5,10,10];
+    const d1 = [f1.word_count,f1.char_count,f1.caps_ratio,f1.exclamation_count,f1.aggression_score,f1.positive_word_count,f1.negative_word_count];
+    const d2 = [f2.word_count,f2.char_count,f2.caps_ratio,f2.exclamation_count,f2.aggression_score,f2.positive_word_count,f2.negative_word_count];
+    if (cmpChartInst) cmpChartInst.destroy();
+    cmpChartInst = new Chart(document.getElementById('cmpChart'), {
+      type:'bar',
+      data:{
+        labels:featLabels,
+        datasets:[
+          {label:'Text A', data:d1.map((v,i)=>normalize(v,maxes[i])), backgroundColor:'rgba(0,229,255,.6)', borderRadius:5, borderSkipped:false},
+          {label:'Text B', data:d2.map((v,i)=>normalize(v,maxes[i])), backgroundColor:'rgba(124,58,237,.6)', borderRadius:5, borderSkipped:false},
+        ]
+      },
+      options:{responsive:true, maintainAspectRatio:false,
+        plugins:{legend:{labels:{color:'#7a9bb5',font:{family:'JetBrains Mono',size:11}}}},
+        scales:{
+          x:{ticks:{color:'#304455',font:{family:'JetBrains Mono',size:11}},grid:{color:'rgba(255,255,255,.03)'}},
+          y:{ticks:{color:'#304455'},grid:{color:'rgba(255,255,255,.03)'},title:{display:true,text:'Normalized Score',color:'#304455'}}
+        }
+      }
+    });
+  }
+  document.getElementById('cmpResults').style.display = 'block';
+  document.getElementById('cmpResults').scrollIntoView({behavior:'smooth'});
+}
+
+function loadCmpEx() {
+  document.getElementById('cmpA').value = EX.safe1;
+  document.getElementById('cmpB').value = EX.thr1;
+  showToast('Example loaded — click COMPARE');
+}
+
+// ══════════════════════════════════════════════════════
+// HISTORY
+// ══════════════════════════════════════════════════════
+async function loadHistory() {
+  try {
+    const r = await fetch('/api/history');
+    const d = await r.json();
+    const hist = d.history || [];
+    const rPills = {safe:'pill-safe',moderate:'pill-mod',high:'pill-high',critical:'pill-crit'};
+    if (!hist.length) {
+      document.getElementById('histBody').innerHTML =
+        '<div style="text-align:center;padding:40px;color:var(--text3);font-family:var(--fm)">No analyses yet — run some detections first</div>';
+    } else {
+      document.getElementById('histBody').innerHTML = hist.map(h =>
+        `<div class="hist-item">
+          <div class="hist-id" style="font-family:var(--fm);font-size:10px;color:var(--text3)">${h.id}</div>
+          <div style="flex:1;font-size:13px;color:var(--text2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${h.text_preview}</div>
+          <span class="pill ${h.is_bullying?'pill-danger':'pill-safe'}" style="flex-shrink:0">${h.is_bullying?'Bullying':'Safe'}</span>
+          <span class="pill ${rPills[h.risk]||'pill-safe'}" style="flex-shrink:0">${h.risk}</span>
+          <div style="font-family:var(--fm);font-size:10px;color:var(--text3);flex-shrink:0;width:60px;text-align:right">${h.timestamp}</div>
+        </div>`
+      ).join('');
+      document.getElementById('histStats').textContent = hist.length + ' records';
+    }
+    // History category chart
+    const statsR = await fetch('/api/stats');
+    const stats = await statsR.json();
+    const catData = stats.by_category || {};
+    const catLabels = Object.keys(catData);
+    const catVals = Object.values(catData);
+    if (catLabels.length > 0) {
+      if (histChartInst) histChartInst.destroy();
+      histChartInst = new Chart(document.getElementById('histChart'), {
+        type:'doughnut',
+        data:{
+          labels:catLabels,
+          datasets:[{data:catVals,backgroundColor:['#ff6b35','#ff1744','#aa00ff','#ff4081','#ff6d00','#6200ea'],borderWidth:0,hoverOffset:6}]
+        },
+        options:{responsive:true, maintainAspectRatio:false,
+          plugins:{legend:{position:'right',labels:{color:'#7a9bb5',font:{family:'JetBrains Mono',size:11},padding:12}}},
+        }
+      });
+    }
+  } catch(e) {}
+}
+
+function exportHistory() {
+  fetch('/api/history').then(r=>r.json()).then(d => {
+    const blob = new Blob([JSON.stringify(d.history, null, 2)], {type:'application/json'});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'cyberguard_history.json';
+    a.click();
+    showToast('History exported!');
+  });
+}
+
+// ══════════════════════════════════════════════════════
+// DASHBOARD CHARTS
+// ══════════════════════════════════════════════════════
+const chartDefaults = {
+  responsive:true, maintainAspectRatio:false,
+  plugins:{legend:{display:false}},
+  scales:{
+    x:{ticks:{color:'#304455',font:{family:'JetBrains Mono',size:11}},grid:{color:'rgba(255,255,255,.03)'}},
+    y:{ticks:{color:'#304455'},grid:{color:'rgba(255,255,255,.03)'}},
+  }
+};
+
+function buildCharts() {
+  if (chartsBuilt) { refreshDashboard(); return; }
+  chartsBuilt = true;
+
+  new Chart(document.getElementById('distChart'), {
+    type:'bar',
+    data:{
+      labels:['Normal','Toxic','Obscene','Insult','Identity Hate','Severe Toxic','Threat'],
+      datasets:[{label:'Samples',
+        data:[4500,1800,1200,1000,700,500,300],
+        backgroundColor:['#00e676','#ff6d00','#6200ea','#ff4081','#aa00ff','#ff1744','#ff6b35'],
+        borderRadius:7,borderSkipped:false}]
+    },
+    options:{...chartDefaults,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' '+c.parsed.y.toLocaleString()+' samples'}}}}
+  });
+
+  new Chart(document.getElementById('splitChart'), {
+    type:'doughnut',
+    data:{
+      labels:['Cyberbullying','Normal'],
+      datasets:[{data:[55,45],backgroundColor:['#ff1744','#00e676'],borderWidth:0,hoverOffset:8}]
+    },
+    options:{responsive:true,maintainAspectRatio:false,cutout:'65%',
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.label}: ${c.parsed}%`}}}}
+  });
+
+  new Chart(document.getElementById('cvChart'), {
+    type:'bar',
+    data:{
+      labels:['Naive Bayes','Logistic Reg','Linear SVM','Random Forest'],
+      datasets:[
+        {label:'CV Mean',data:[0.847,0.904,0.919,0.911],
+          backgroundColor:['rgba(124,58,237,.7)','rgba(255,71,87,.7)','rgba(0,229,255,.7)','rgba(0,230,118,.7)'],
+          borderRadius:8,borderSkipped:false},
+        {label:'Std Dev',data:[0.011,0.028,0.005,0.011],
+          backgroundColor:'transparent',borderColor:'rgba(255,255,255,.3)',type:'bar'}
+      ]
+    },
+    options:{...chartDefaults,
+      scales:{...chartDefaults.scales, y:{...chartDefaults.scales.y, min:0.7,max:1.0}}}
+  });
+
+  new Chart(document.getElementById('perClassChart'), {
+    type:'bar',
+    data:{
+      labels:['identity_hate','insult','normal','obscene','severe_toxic','threat','toxic'],
+      datasets:[{label:'F1 Score',
+        data:[1.00,0.99,1.00,0.79,0.83,0.92,0.87],
+        backgroundColor:['#aa00ff','#ff4081','#00e676','#6200ea','#ff1744','#ff6b35','#ff6d00'],
+        borderRadius:6,borderSkipped:false}]
+    },
+    options:{...chartDefaults,
+      scales:{...chartDefaults.scales, y:{...chartDefaults.scales.y, min:0.5,max:1.05}}}
+  });
+
+  riskChartInst = new Chart(document.getElementById('riskChart'), {
+    type:'bar',
+    data:{
+      labels:['Safe','Moderate','High','Critical'],
+      datasets:[{label:'Count',data:[0,0,0,0],
+        backgroundColor:['rgba(0,230,118,.7)','rgba(255,179,0,.7)','rgba(255,109,0,.7)','rgba(255,23,68,.7)'],
+        borderRadius:7,borderSkipped:false}]
+    },
+    options:{...chartDefaults}
+  });
+
+  refreshDashboard();
+}
+
+async function refreshDashboard() {
+  try {
+    const r = await fetch('/api/stats');
+    const s = await r.json();
+    document.getElementById('d-total').textContent = s.session_total;
+    document.getElementById('d-bull').textContent = s.session_bullying;
+    document.getElementById('d-ms').textContent = s.avg_response_ms + 'ms';
+    document.getElementById('d-rate').textContent = s.bullying_rate + '% bullying rate this session';
+    if (riskChartInst && s.risk_counts) {
+      const rc = s.risk_counts;
+      riskChartInst.data.datasets[0].data = [rc.safe||0, rc.moderate||0, rc.high||0, rc.critical||0];
+      riskChartInst.update();
+    }
+  } catch(e) {}
+}
+
+// ══════════════════════════════════════════════════════
+// TOAST
+// ══════════════════════════════════════════════════════
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2600);
+}
+
+// ══════════════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════════════
+window.addEventListener('load', () => {
+  fetch('/api/stats').then(r=>r.json()).then(s=>{
+    document.getElementById('h-total').textContent = s.session_total;
+    document.getElementById('sessCtr').textContent = 'Session: ' + s.session_total;
+  }).catch(()=>{});
+});
+</script>
+
+</body>
+</html>
